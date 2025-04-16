@@ -3,10 +3,20 @@ import { StyleSheet, View, TextInput, TouchableOpacity, Text, Alert } from 'reac
 import { Stack, router } from 'expo-router';
 
 import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
+import { useThemeColor } from '@/hooks/useThemeColor';
+import SerpaLogo from '@/assets/icons/serpa_logo.svg'; // SERPA 로고 이미지 경로
 
 export default function ResetPasswordScreen() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  
+  // 테마 색상 가져오기
+  const textColor = useThemeColor({}, 'text');
+  const backgroundColor = useThemeColor({}, 'background');
+  const inputBackground = useThemeColor({}, 'card');
+  const borderColor = useThemeColor({}, 'border');
+  const secondaryText = useThemeColor({}, 'secondaryText');
 
   const handleConfirm = () => {
     // 비밀번호 일치 확인
@@ -37,36 +47,44 @@ export default function ResetPasswordScreen() {
       
       {/* SERPA 로고 */}
       <View style={styles.logoContainer}>
-        <Text style={styles.logoText}>SERPA</Text>
+        {/* <ThemedText style={styles.logoText}>SERPA</ThemedText> */}
+        <SerpaLogo width={120} height={40} color={textColor} />
       </View>
       
       {/* 새 비밀번호 입력 필드 */}
       <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>NEW PASSWORD</Text>
+        <ThemedText style={styles.inputLabel}>NEW PASSWORD</ThemedText>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { backgroundColor: inputBackground, borderColor, color: textColor }]}
           placeholder=""
           value={newPassword}
           onChangeText={setNewPassword}
           secureTextEntry
+          placeholderTextColor={secondaryText}
         />
       </View>
       
       {/* 새 비밀번호 확인 입력 필드 */}
       <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>ONE MORE NEW PASSWORD</Text>
+        <ThemedText style={styles.inputLabel}>ONE MORE NEW PASSWORD</ThemedText>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { backgroundColor: inputBackground, borderColor, color: textColor }]}
           placeholder=""
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           secureTextEntry
+          placeholderTextColor={secondaryText}
         />
       </View>
       
       {/* 확인 버튼 */}
       <TouchableOpacity style={styles.confirmButton} onPress={handleConfirm}>
         <Text style={styles.confirmButtonText}>Confirm</Text>
+      </TouchableOpacity>
+      
+      {/* 로그인 페이지로 돌아가기 */}
+      <TouchableOpacity style={styles.loginLink} onPress={() => router.push('/login')}>
+        <ThemedText style={styles.loginLinkText}>로그인 페이지로 돌아가기</ThemedText>
       </TouchableOpacity>
     </ThemedView>
   );
@@ -94,29 +112,35 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 12,
     marginBottom: 5,
-    color: '#666',
+    opacity: 0.7,
   },
   input: {
     width: '100%',
     height: 45,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 5,
+    borderRadius: 15,
     padding: 10,
-    backgroundColor: 'white',
   },
   confirmButton: {
     width: '100%',
     height: 50,
     backgroundColor: '#8639E8',
-    borderRadius: 5,
+    borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 20,
+    marginBottom: 20,
   },
   confirmButtonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: '600',
+  },
+  loginLink: {
+    marginTop: 15,
+  },
+  loginLinkText: {
+    fontSize: 14,
+    opacity: 0.8,
   },
 });

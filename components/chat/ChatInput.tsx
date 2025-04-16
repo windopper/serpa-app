@@ -11,28 +11,42 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { ThemedText } from '@/components/ThemedText';
+import { Colors } from '@/constants/Colors';
 import ActionMenu from './ActionMenu';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
   onPressSearch: () => void;
   onSendImage?: (imageData: any) => void;
+  disabled?: boolean; // 채팅 입력 비활성화 여부
 }
 
 const ChatInput: React.FC<ChatInputProps> = ({ 
   onSendMessage, 
   onPressSearch, 
-  onSendImage 
+  onSendImage,
+  disabled = false
 }) => {
   const [message, setMessage] = useState('');
   const [showActionMenu, setShowActionMenu] = useState(false);
   const inputRef = useRef<TextInput>(null);
   
-  const textColor = useThemeColor('text');
-  const tintColor = useThemeColor('tint');
-  const buttonColor = useThemeColor('primaryButtonBackground');
+  const textColor = useThemeColor({}, 'text');
+  const buttonColor = useThemeColor({}, 'buttonPrimary');
+  const borderColor = useThemeColor({}, 'border');
+  const inputBgColor = useThemeColor({}, 'inputBackground');
+  const isDarkMode = useThemeColor({}, 'background') === Colors.dark.background;
+  
+  // 다크모드일 때 더 밝은 placeholder 색상 사용
+  const placeholderColor = isDarkMode ? 'rgba(255, 255, 255, 0.5)' : useThemeColor({}, 'placeholderText');
+  // 다크모드일 때 더 뚜렷한 테두리 색상 사용
+  const inputBorderColor = isDarkMode ? 'rgba(255, 255, 255, 0.2)' : borderColor;
+  // 비활성화 상태일 때 더 어두운 배경색 사용
+  const disabledInputBgColor = isDarkMode ? 'rgba(30, 31, 32, 0.5)' : '#F0F0F0';
 
   const handleButtonPress = () => {
+    if (disabled) return;
+    
     if (message.trim() !== '') {
       // 메시지가 입력된 경우 메시지 보내기
       onSendMessage(message);
@@ -44,6 +58,8 @@ const ChatInput: React.FC<ChatInputProps> = ({
   };
 
   const handleAddButtonPress = () => {
+    if (disabled) return;
+    
     // 액션 메뉴 토글 (애니메이션 없이 즉시 전환)
     setShowActionMenu(!showActionMenu);
     if (inputRef.current) {
@@ -52,6 +68,8 @@ const ChatInput: React.FC<ChatInputProps> = ({
   };
 
   const handleActionSelect = (action: string, result?: any) => {
+    if (disabled) return;
+    
     // 각 액션에 맞는 기능 구현
     console.log(`선택된 액션: ${action}`);
     setShowActionMenu(false);
@@ -78,37 +96,55 @@ const ChatInput: React.FC<ChatInputProps> = ({
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 10 : 10}
-      style={styles.inputContainer}
+      style={[styles.inputContainer, { borderTopColor: borderColor }]}
     >
-      <View style={styles.inputWrapper}>
+      <View 
+        style={[
+          styles.inputWrapper, 
+          { 
+            borderColor: inputBorderColor, 
+            backgroundColor: disabled ? disabledInputBgColor : inputBgColor,
+            borderWidth: isDarkMode ? 1 : 0.5,
+            opacity: disabled ? 0.7 : 1
+          }
+        ]}
+      >
         <TouchableOpacity
           style={styles.addButton}
           onPress={handleAddButtonPress}
+          disabled={disabled}
         >
-          <Ionicons name="add" size={24} color={textColor} />
+          <Ionicons name="add" size={24} color={disabled ? placeholderColor : textColor} />
         </TouchableOpacity>
 
         <TextInput
           ref={inputRef}
-          style={[styles.input, { color: textColor, borderColor: tintColor }]}
+          style={[styles.input, { color: textColor }]}
           value={message}
           onChangeText={setMessage}
           onFocus={() => setShowActionMenu(false)}
-          placeholder="메시지를 입력하세요"
-          placeholderTextColor="#888"
+          // placeholder={disabled ? "이 문의는 종료되었습니다" : "메시지를 입력하세요"}
+          placeholderTextColor={placeholderColor}
           multiline
+          editable={!disabled}
         />
 
         <TouchableOpacity
-          style={[styles.sendButton, { backgroundColor: buttonColor }]}
+          style={[
+            styles.sendButton, 
+            { 
+              backgroundColor: disabled ? (isDarkMode ? '#444' : '#CCCCCC') : buttonColor 
+            }
+          ]}
           onPress={handleButtonPress}
+          disabled={disabled}
         >
-          <Ionicons name={getButtonIcon()} size={24} color="#000" />
+          <Ionicons name={getButtonIcon()} size={24} color="#fff" />
         </TouchableOpacity>
       </View>
 
-      {/* 분리된 ActionMenu 컴포넌트 사용 */}
-      {showActionMenu && (
+      {/* 분리된 ActionMenu 컴포넌트 사용 - 비활성화 상태면 표시하지 않음 */}
+      {showActionMenu && !disabled && (
         <ActionMenu onSelectAction={handleActionSelect} />
       )}
     </KeyboardAvoidingView>

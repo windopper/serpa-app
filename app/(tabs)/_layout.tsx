@@ -1,31 +1,59 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform } from 'react-native';
-
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { useThemeColor } from '@/hooks/useThemeColor';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const tint = useThemeColor({}, 'tint')
+  const tabIconDefault = useThemeColor({}, 'tabIconDefault')
+  const border = useThemeColor({}, 'border')
+  const card = useThemeColor({}, 'card')
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: tint,
+        tabBarInactiveTintColor: tabIconDefault,
         headerShown: false,
         tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: { display: 'none' }, // 바텀 탭바 숨기기
-        headerTitle: 'd', // 헤더 타이틀 비우기
+        // tabBarBackground: TabBarBackground,
+        tabBarStyle: { 
+          // display: 'none', // 바텀 탭바 보이게 설정
+          height: 85,
+          paddingBottom: 5,
+          paddingTop: 5,
+          backgroundColor: card,
+          borderTopColor: border,
+        },
+        headerTitle: '', // 헤더 타이틀 비우기
       }}>
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'Home',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+        }}
+      />
       <Tabs.Screen
         name="chat"
         options={{
-          title: '문의대행',
+          title: 'New Chat',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="message.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="my-inquiries"
+        options={{
+          title: 'My Inqueries',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="list.bullet" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="faq"
+        options={{
+          title: 'FAQ',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="questionmark.circle" color={color} />,
         }}
       />
     </Tabs>

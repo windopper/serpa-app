@@ -29,8 +29,11 @@ const SearchModal: React.FC<SearchModalProps> = ({
   onClose,
   onSearch,
 }) => {
-  const textColor = useThemeColor('text');
-  const backgroundColor = useThemeColor('background');
+  const textColor = useThemeColor({}, 'text');
+  const backgroundColor = useThemeColor({}, 'background');
+  const borderColor = useThemeColor({}, 'border');
+  const inputBgColor = useThemeColor({}, 'inputBackground');
+  const placeholderColor = useThemeColor({}, 'placeholderText');
 
   return (
     <Modal
@@ -48,11 +51,11 @@ const SearchModal: React.FC<SearchModalProps> = ({
             </TouchableOpacity>
           </View>
 
-          <View style={styles.searchInputContainer}>
+          <View style={[styles.searchInputContainer, { backgroundColor: inputBgColor }]}>
             <Ionicons
               name="search"
               size={20}
-              color="#888"
+              color={placeholderColor}
               style={styles.searchIcon}
             />
             <TextInput
@@ -60,14 +63,14 @@ const SearchModal: React.FC<SearchModalProps> = ({
               value={searchQuery}
               onChangeText={onChangeSearchQuery}
               placeholder="영문/한글 검색"
-              placeholderTextColor="#888"
+              placeholderTextColor={placeholderColor}
               autoFocus={true}
               returnKeyType="search"
               onSubmitEditing={onSearch}
             />
           </View>
 
-          <View style={styles.searchTabs}>
+          <View style={[styles.searchTabs, { borderBottomColor: borderColor }]}>
             <TouchableOpacity style={styles.searchTab}>
               <ThemedText>통합검색</ThemedText>
             </TouchableOpacity>

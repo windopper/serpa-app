@@ -4,11 +4,21 @@ import { Stack, Link, useRouter } from 'expo-router';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { useThemeColor } from '@/hooks/useThemeColor'
+import SerpaLogo from '@/assets/icons/serpa_logo.svg'; // SERPA 로고 이미지 경로
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+  
+  // 테마 색상 가져오기
+  const textColor = useThemeColor({}, 'text');
+  const backgroundColor = useThemeColor({}, 'background');
+  const inputBackground = useThemeColor({}, 'card');
+  const borderColor = useThemeColor({}, 'border');
+  const tintColor = useThemeColor({}, 'tint');
+  const secondaryText = useThemeColor({}, 'secondaryText');
 
   const handleLogin = () => {
     // 실제 구현에서는 여기에 인증 로직을 추가해야 합니다
@@ -24,45 +34,48 @@ export default function LoginScreen() {
       
       {/* SERPA 로고 */}
       <View style={styles.logoContainer}>
-        <Text style={styles.logoText}>SERPA</Text>
+        {/* <ThemedText style={styles.logoText}>SERPA</ThemedText> */}
+        <SerpaLogo width={120} height={40} color={textColor} />
       </View>
       
       {/* 소셜 로그인 버튼 */}
-      <TouchableOpacity style={styles.socialButton}>
+      <TouchableOpacity style={[styles.socialButton, { backgroundColor: inputBackground, borderColor }]}>
         <Image 
           source={{ uri: 'https://cdn-icons-png.flaticon.com/512/2991/2991148.png' }} 
           style={styles.socialIcon} 
         />
-        <Text style={styles.socialButtonText}>Continue with Google</Text>
+        <Text style={[styles.socialButtonText, { color: textColor }]}>Continue with Google</Text>
       </TouchableOpacity>
       
-      <TouchableOpacity style={styles.socialButton}>
+      <TouchableOpacity style={[styles.socialButton, { backgroundColor: inputBackground, borderColor }]}>
         <Text style={[styles.socialIcon, styles.naverIcon]}>N</Text>
-        <Text style={styles.socialButtonText}>Continue with Naver</Text>
+        <Text style={[styles.socialButtonText, { color: textColor }]}>Continue with Naver</Text>
       </TouchableOpacity>
       
       {/* 이메일 입력 필드 */}
       <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>EMAIL</Text>
+        <ThemedText style={styles.inputLabel}>EMAIL</ThemedText>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { backgroundColor: inputBackground, borderColor, color: textColor }]}
           placeholder=""
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
           autoCapitalize="none"
+          placeholderTextColor={secondaryText}
         />
       </View>
       
       {/* 비밀번호 입력 필드 */}
       <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>PASSWORD</Text>
+        <ThemedText style={styles.inputLabel}>PASSWORD</ThemedText>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { backgroundColor: inputBackground, borderColor, color: textColor }]}
           placeholder=""
           value={password}
           onChangeText={setPassword}
           secureTextEntry
+          placeholderTextColor={secondaryText}
         />
       </View>
       
@@ -75,13 +88,13 @@ export default function LoginScreen() {
       <View style={styles.bottomContainer}>
         <Link href="/forgot-password" asChild>
           <TouchableOpacity>
-            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+            <ThemedText style={styles.forgotPasswordText}>Forgot Password?</ThemedText>
           </TouchableOpacity>
         </Link>
         
         <Link href="/signup" asChild>
           <TouchableOpacity>
-            <Text style={styles.signupText}>Signup !</Text>
+            <ThemedText style={[styles.signupText, { color: tintColor }]}>Signup !</ThemedText>
           </TouchableOpacity>
         </Link>
       </View>
@@ -112,9 +125,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 25,
     marginBottom: 15,
-    backgroundColor: 'white',
     borderWidth: 1,
-    borderColor: '#E0E0E0',
   },
   socialIcon: {
     width: 20,
@@ -143,16 +154,14 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 12,
     marginBottom: 5,
-    color: '#666',
+    opacity: 0.7,
   },
   input: {
     width: '100%',
     height: 45,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
     borderRadius: 15,
     padding: 10,
-    backgroundColor: 'white',
   },
   loginButton: {
     width: '100%',
@@ -176,12 +185,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   forgotPasswordText: {
-    color: '#666',
     fontSize: 14,
     marginBottom: 15,
+    opacity: 0.8,
   },
   signupText: {
-    color: '#333',
     fontSize: 14,
     fontWeight: '600',
   },

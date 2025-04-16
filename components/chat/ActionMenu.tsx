@@ -10,7 +10,9 @@ interface ActionMenuProps {
 }
 
 const ActionMenu: React.FC<ActionMenuProps> = ({ onSelectAction }) => {
-  const textColor = useThemeColor('text');
+  const textColor = useThemeColor({}, 'text');
+  const borderColor = useThemeColor({}, 'border');
+  const backgroundColor = useThemeColor({}, 'inputBackground');
 
   const handleGallerySelect = async () => {
     try {
@@ -76,7 +78,12 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ onSelectAction }) => {
           style={styles.actionButton}
           onPress={handleGallerySelect}
         >
-          <View style={styles.actionIconContainer}>
+          <View
+            style={[
+              styles.actionIconContainer,
+              { backgroundColor, borderColor },
+            ]}
+          >
             <Ionicons name="images-outline" size={24} color={textColor} />
           </View>
           <ThemedText style={styles.actionText}>앨범</ThemedText>
@@ -85,7 +92,12 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ onSelectAction }) => {
           style={styles.actionButton}
           onPress={handleCameraSelect}
         >
-          <View style={styles.actionIconContainer}>
+          <View
+            style={[
+              styles.actionIconContainer,
+              { backgroundColor, borderColor },
+            ]}
+          >
             <Ionicons name="camera-outline" size={24} color={textColor} />
           </View>
           <ThemedText style={styles.actionText}>카메라</ThemedText>
@@ -94,7 +106,12 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ onSelectAction }) => {
           style={styles.actionButton}
           onPress={handleMapSelect}
         >
-          <View style={styles.actionIconContainer}>
+          <View
+            style={[
+              styles.actionIconContainer,
+              { backgroundColor, borderColor },
+            ]}
+          >
             <Ionicons
               name="location-outline"
               size={24}
@@ -132,10 +149,8 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
   },
   actionText: {
     fontSize: 12,

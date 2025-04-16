@@ -3,12 +3,22 @@ import { StyleSheet, View, TextInput, TouchableOpacity, Text, Alert } from 'reac
 import { Stack, router } from 'expo-router';
 
 import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
+import { useThemeColor } from '@/hooks/useThemeColor';
+import SerpaLogo from '@/assets/icons/serpa_logo.svg'; // SERPA 로고 이미지 경로
 
 export default function ForgotPasswordScreen() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [authCode, setAuthCode] = useState('');
   const [isCodeSent, setIsCodeSent] = useState(false);
+  
+  // 테마 색상 가져오기
+  const textColor = useThemeColor({}, 'text');
+  const backgroundColor = useThemeColor({}, 'background');
+  const inputBackground = useThemeColor({}, 'card');
+  const borderColor = useThemeColor({}, 'border');
+  const secondaryText = useThemeColor({}, 'secondaryText');
 
   const handleSendCode = () => {
     if (!name.trim() || !email.trim()) {
@@ -45,43 +55,47 @@ export default function ForgotPasswordScreen() {
       
       {/* SERPA 로고 */}
       <View style={styles.logoContainer}>
-        <Text style={styles.logoText}>SERPA</Text>
+        {/* <ThemedText style={styles.logoText}>SERPA</ThemedText> */}
+        <SerpaLogo width={120} height={40} color={textColor} />
       </View>
       
       {/* 이름 입력 필드 */}
       <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>NAME</Text>
+        <ThemedText style={styles.inputLabel}>NAME</ThemedText>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { backgroundColor: inputBackground, borderColor, color: textColor }]}
           placeholder="Jiara Martins"
           value={name}
           onChangeText={setName}
           autoCapitalize="words"
+          placeholderTextColor={secondaryText}
         />
       </View>
       
       {/* 이메일 입력 필드 */}
       <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>EMAIL</Text>
+        <ThemedText style={styles.inputLabel}>EMAIL</ThemedText>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { backgroundColor: inputBackground, borderColor, color: textColor }]}
           placeholder="hello@reallygreatsite.com"
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
           autoCapitalize="none"
+          placeholderTextColor={secondaryText}
         />
       </View>
       
       {/* 인증 코드 입력 필드 */}
       <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>AUTHENTICATION CODE</Text>
+        <ThemedText style={styles.inputLabel}>AUTHENTICATION CODE</ThemedText>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { backgroundColor: inputBackground, borderColor, color: textColor }]}
           placeholder="Please check your email"
           value={authCode}
           onChangeText={setAuthCode}
           keyboardType="number-pad"
+          placeholderTextColor={secondaryText}
         />
       </View>
       
@@ -92,7 +106,7 @@ export default function ForgotPasswordScreen() {
       
       {/* 로그인 페이지로 돌아가기 */}
       <TouchableOpacity style={styles.loginLink} onPress={() => router.push('/login')}>
-        <Text style={styles.loginLinkText}>로그인 페이지로 돌아가기</Text>
+        <ThemedText style={styles.loginLinkText}>로그인 페이지로 돌아가기</ThemedText>
       </TouchableOpacity>
     </ThemedView>
   );
@@ -120,16 +134,14 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 12,
     marginBottom: 5,
-    color: '#666',
+    opacity: 0.7,
   },
   input: {
     width: '100%',
     height: 45,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
     borderRadius: 15,
     padding: 10,
-    backgroundColor: 'white',
   },
   confirmButton: {
     width: '100%',
@@ -150,7 +162,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   loginLinkText: {
-    color: '#666',
     fontSize: 14,
+    opacity: 0.8,
   },
 });

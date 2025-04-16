@@ -5,6 +5,9 @@ import { Picker } from '@react-native-picker/picker';
 import Modal from 'react-native-modal';
 
 import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
+import { useThemeColor } from '@/hooks/useThemeColor';
+import SerpaLogo from '@/assets/icons/serpa_logo.svg'; // SERPA 로고 이미지 경로
 
 // 디바이스 너비 구하기
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -24,6 +27,15 @@ export default function SignupScreen() {
   // 임시 저장 값 (모달에서 선택하다가 취소할 경우를 위함)
   const [tempDateOfBirth, setTempDateOfBirth] = useState('');
   const [tempNationality, setTempNationality] = useState('');
+
+  // 테마 색상 가져오기
+  const textColor = useThemeColor({}, 'text');
+  const backgroundColor = useThemeColor({}, 'background');
+  const inputBackground = useThemeColor({}, 'card');
+  const borderColor = useThemeColor({}, 'border');
+  const tintColor = useThemeColor({}, 'tint');
+  const secondaryText = useThemeColor({}, 'secondaryText');
+  const modalBackground = useThemeColor({}, 'card');
 
   const handleSignup = () => {
     // 비밀번호 일치 확인
@@ -89,69 +101,78 @@ export default function SignupScreen() {
       
       {/* SERPA 로고 */}
       <View style={styles.logoContainer}>
-        <Text style={styles.logoText}>SERPA</Text>
+        {/* <ThemedText style={styles.logoText}>SERPA</ThemedText> */}
+        <SerpaLogo width={120} height={40} color={textColor} />
       </View>
       
       {/* 이름 입력 필드 */}
       <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>NAME</Text>
+        <ThemedText style={styles.inputLabel}>NAME</ThemedText>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { backgroundColor: inputBackground, borderColor, color: textColor }]}
           placeholder="Jiara Martins"
           value={name}
           onChangeText={setName}
           autoCapitalize="words"
+          placeholderTextColor={secondaryText}
         />
       </View>
       
       {/* 이메일 입력 필드 */}
       <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>EMAIL</Text>
+        <ThemedText style={styles.inputLabel}>EMAIL</ThemedText>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { backgroundColor: inputBackground, borderColor, color: textColor }]}
           placeholder="hello@reallygreatsite.com"
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
           autoCapitalize="none"
+          placeholderTextColor={secondaryText}
         />
       </View>
       
       {/* 비밀번호 입력 필드 */}
       <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>PASSWORD</Text>
+        <ThemedText style={styles.inputLabel}>PASSWORD</ThemedText>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { backgroundColor: inputBackground, borderColor, color: textColor }]}
           placeholder="******"
           value={password}
           onChangeText={setPassword}
           secureTextEntry
+          placeholderTextColor={secondaryText}
         />
       </View>
       
       {/* 비밀번호 확인 입력 필드 */}
       <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>VERIFY PASSWORD</Text>
+        <ThemedText style={styles.inputLabel}>VERIFY PASSWORD</ThemedText>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { backgroundColor: inputBackground, borderColor, color: textColor }]}
           placeholder="******"
           value={verifyPassword}
           onChangeText={setVerifyPassword}
           secureTextEntry
+          placeholderTextColor={secondaryText}
         />
       </View>
       
       {/* 생년월일 선택 필드 */}
       <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>DATE OF BIRTH</Text>
+        <ThemedText style={styles.inputLabel}>DATE OF BIRTH</ThemedText>
         <TouchableOpacity 
-          style={styles.selectInput}
+          style={[styles.selectInput, { backgroundColor: inputBackground, borderColor }]}
           onPress={() => {
             setTempDateOfBirth(dateOfBirth);
             setDatePickerVisible(true);
           }}
         >
-          <Text style={[styles.selectText, !dateOfBirth && styles.placeholderText]}>
+          <Text style={[
+            styles.selectText, 
+            !dateOfBirth && styles.placeholderText, 
+            { color: dateOfBirth ? textColor : secondaryText }
+          ]}>
             {dateOfBirth || '생년월일 선택'}
           </Text>
         </TouchableOpacity>
@@ -159,15 +180,19 @@ export default function SignupScreen() {
       
       {/* 국적 선택 필드 */}
       <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>NATIONALITY</Text>
+        <ThemedText style={styles.inputLabel}>NATIONALITY</ThemedText>
         <TouchableOpacity 
-          style={styles.selectInput}
+          style={[styles.selectInput, { backgroundColor: inputBackground, borderColor }]}
           onPress={() => {
             setTempNationality(nationality);
             setNationalityPickerVisible(true);
           }}
         >
-          <Text style={[styles.selectText, !nationality && styles.placeholderText]}>
+          <Text style={[
+            styles.selectText, 
+            !nationality && styles.placeholderText, 
+            { color: nationality ? textColor : secondaryText }
+          ]}>
             {nationality ? countries.find(c => c.value === nationality)?.label : '국적 선택'}
           </Text>
         </TouchableOpacity>
@@ -180,7 +205,7 @@ export default function SignupScreen() {
       
       {/* 로그인 페이지로 돌아가기 */}
       <TouchableOpacity style={styles.loginLink} onPress={() => router.push('/login')}>
-        <Text style={styles.loginLinkText}>이미 계정이 있으신가요? 로그인하기</Text>
+        <ThemedText style={styles.loginLinkText}>이미 계정이 있으신가요? 로그인하기</ThemedText>
       </TouchableOpacity>
 
       {/* 생년월일 선택 모달 */}
@@ -196,12 +221,12 @@ export default function SignupScreen() {
         propagateSwipe={false}
         onBackdropPress={() => {}} // 배경 터치로 닫히지 않도록 빈 함수 설정
       >
-        <View style={styles.modalContent}>
-          <View style={styles.modalHeader}>
+        <View style={[styles.modalContent, { backgroundColor: modalBackground }]}>
+          <View style={[styles.modalHeader, { borderBottomColor: borderColor }]}>
             <TouchableOpacity onPress={cancelDatePicker}>
-              <Text style={styles.modalCancel}>취소</Text>
+              <Text style={[styles.modalCancel, { color: secondaryText }]}>취소</Text>
             </TouchableOpacity>
-            <Text style={styles.modalTitle}>생년월일 선택</Text>
+            <Text style={[styles.modalTitle, { color: textColor }]}>생년월일 선택</Text>
             <TouchableOpacity onPress={confirmDateOfBirth}>
               <Text style={styles.modalConfirm}>확인</Text>
             </TouchableOpacity>
@@ -211,19 +236,21 @@ export default function SignupScreen() {
               selectedValue={tempDateOfBirth}
               onValueChange={setTempDateOfBirth}
               style={styles.picker}
+              itemStyle={{ color: textColor }}
             >
-              <Picker.Item label="생년월일 선택" value="" />
+              <Picker.Item label="생년월일 선택" value="" color={secondaryText} />
               {birthYears.map((year) => (
                 <Picker.Item 
                   key={year.value} 
                   label={year.label} 
                   value={year.value} 
+                  color={textColor}
                 />
               ))}
             </Picker>
           </View>
           <View style={styles.handleContainer}>
-            <View style={styles.handle} />
+            <View style={[styles.handle, { backgroundColor: borderColor }]} />
           </View>
         </View>
       </Modal>
@@ -241,12 +268,12 @@ export default function SignupScreen() {
         propagateSwipe={false}
         onBackdropPress={() => {}} // 배경 터치로 닫히지 않도록 빈 함수 설정
       >
-        <View style={styles.modalContent}>
-          <View style={styles.modalHeader}>
+        <View style={[styles.modalContent, { backgroundColor: modalBackground }]}>
+          <View style={[styles.modalHeader, { borderBottomColor: borderColor }]}>
             <TouchableOpacity onPress={cancelNationalityPicker}>
-              <Text style={styles.modalCancel}>취소</Text>
+              <Text style={[styles.modalCancel, { color: secondaryText }]}>취소</Text>
             </TouchableOpacity>
-            <Text style={styles.modalTitle}>국적 선택</Text>
+            <Text style={[styles.modalTitle, { color: textColor }]}>국적 선택</Text>
             <TouchableOpacity onPress={confirmNationality}>
               <Text style={styles.modalConfirm}>확인</Text>
             </TouchableOpacity>
@@ -256,18 +283,20 @@ export default function SignupScreen() {
               selectedValue={tempNationality}
               onValueChange={setTempNationality}
               style={styles.picker}
+              itemStyle={{ color: textColor }}
             >
               {countries.map((country) => (
                 <Picker.Item 
                   key={country.value} 
                   label={country.label} 
                   value={country.value} 
+                  color={textColor}
                 />
               ))}
             </Picker>
           </View>
           <View style={styles.handleContainer}>
-            <View style={styles.handle} />
+            <View style={[styles.handle, { backgroundColor: borderColor }]} />
           </View>
         </View>
       </Modal>
@@ -297,32 +326,28 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 12,
     marginBottom: 5,
-    color: '#666',
+    opacity: 0.7,
   },
   input: {
     width: '100%',
     height: 45,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
     borderRadius: 15,
     padding: 10,
-    backgroundColor: 'white',
   },
   selectInput: {
     width: '100%',
     height: 45,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
     borderRadius: 15,
     padding: 10,
-    backgroundColor: 'white',
     justifyContent: 'center',
   },
   selectText: {
-    color: '#333',
+    fontSize: 14,
   },
   placeholderText: {
-    color: '#999',
+    opacity: 0.5,
   },
   signupButton: {
     width: '100%',
@@ -343,8 +368,8 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   loginLinkText: {
-    color: '#666',
     fontSize: 14,
+    opacity: 0.8,
   },
   // 모달 스타일
   modal: {
@@ -352,7 +377,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: 'white',
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
     paddingBottom: Platform.OS === 'ios' ? 30 : 10,
@@ -363,18 +387,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: '#EEEEEE',
     paddingHorizontal: 15,
     paddingVertical: 12,
   },
   modalTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
   },
   modalCancel: {
     fontSize: 15,
-    color: '#999',
     paddingVertical: 5,
     paddingHorizontal: 5,
   },
@@ -402,6 +423,5 @@ const styles = StyleSheet.create({
     width: 40,
     height: 4,
     borderRadius: 2,
-    backgroundColor: '#E0E0E0',
   },
 });
